@@ -34,9 +34,9 @@ Nullable ::= "?"
 Associated ::= "associated"
 TypeName ::=  Array | FixedArray | Map | InterfaceRequest | BasicTypeName
 
-BasicTypeName ::= Associated? Identifier | HandleType | NumericType
+BasicTypeName ::=  HandleType | NumericType | Associated? Identifier
 NumericType ::= "bool" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64" | "float" | "double"
-HandleType ::= "handle" | "handle" "<" SpecificHandleType ">"
+HandleType ::= "handle" ("<" SpecificHandleType ">")?
 SpecificHandleType ::= "message_pipe" | "shared_buffer" | "data_pipe_consumer" | "data_pipe_producer"
 
 Array ::= "array" "<" TypeSpec ">"
