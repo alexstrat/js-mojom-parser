@@ -46,8 +46,6 @@ Map ::= "map" "<" Identifier "," TypeSpec ">"
 
 InterfaceRequest ::= Identifier "&" | "associated" Identifier "&"
 
-Ordinal ::= OrdinalValue?
-
 Default ::= ("=" Constant)?
 
 /* ENUMS */
@@ -71,7 +69,7 @@ Float ::= FloatConst | "+" FloatConst | "-" FloatConst {ws=explicit}
 Name ::= [a-zA-Z_][0-9a-zA-Z_]* {ws=explicit}
 IntConstDec ::= "0" | [1-9][0-9]* {ws=explicit}
 IntConstHex ::= "0"[xX][0-9a-fA-F]+ {ws=explicit}
-OrdinalValue ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
+Ordinal ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
 
 WS ::= [#x20#x09#x0A#x0D]+ /* Space | Tab | \n | \r */
 
