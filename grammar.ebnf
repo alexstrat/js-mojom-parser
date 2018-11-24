@@ -13,13 +13,16 @@ AttributeList ::= (Attribute ("," Attribute)*)?
 Attribute ::= Name ("=" (Name|Literal))?
 
 Struct ::= AttributeSection "struct" Name "{" StructBody "}" ";" | AttributeSection "struct" Name ";"
+/* STRUCT */
 StructBody ::= (StructBody Const | StructBody Enum | StructBody StructField)?
 StructField ::= AttributeSection TypeSpec Name Ordinal Default ";"
 
+/* UNION */
 Union ::= AttributeSection "union" Name "{" UnionBody "}" ";"
 UnionBody ::= (UnionBody UnionField)?
 UnionField ::= AttributeSection TypeSpec Name Ordinal ";"
 
+/* INTERFACE */
 Interface ::= AttributeSection "interface" Name "{" InterfaceBody "}" ";"
 InterfaceBody ::= (InterfaceBody Const | InterfaceBody Enum | InterfaceBody Method)?
 Method ::= AttributeSection Name Ordinal "(" ParameterList ")" Response ";"
@@ -47,12 +50,13 @@ Ordinal ::= OrdinalValue?
 
 Default ::= ("=" Constant)?
 
+/* ENUMS */
 Enum ::= AttributeSection? "enum" Name "{" NonEmptyEnumValueList ","? "}" ";"
 NonEmptyEnumValueList ::= (EnumValue ("," EnumValue)*)
 EnumValue ::= AttributeSection? Name ("=" (Integer|Identifier))?
 
+/* CONSTANTS */
 Const ::= "const" TypeSpec Name "=" Constant ";"
-
 Constant ::= Literal | Identifier ";"
 
 Identifier ::= (Name ("." Name)*) {ws=explicit}
