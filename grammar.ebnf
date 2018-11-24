@@ -14,7 +14,6 @@ Attribute ::= Name ("=" (Name|Literal))?
 
 /* STRUCT */
 Struct ::= AttributeSection? "struct" Name ("{" StructBody "}")? ";"
-/*StructBody ::= (StructBody Const | StructBody Enum | StructBody StructField)?*/
 StructBody ::= (Const | Enum | StructField)*
 StructField ::= AttributeSection? TypeSpec Name Ordinal? Default? ";"
 
