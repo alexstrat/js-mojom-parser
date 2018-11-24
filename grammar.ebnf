@@ -71,7 +71,9 @@ IntConstDec ::= "0" | [1-9][0-9]* {ws=explicit}
 IntConstHex ::= "0"[xX][0-9a-fA-F]+ {ws=explicit}
 Ordinal ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
 
-WS ::= [#x20#x09#x0A#x0D]+ /* Space | Tab | \n | \r */
+EOL               ::= [#x0A#x0D]+ {ws=explicit}
+Comment           ::= '//' (![#x0A#x0D] [#x00-#xFFFF])* EOL {ws=explicit}
+WS                ::= Comment | [#x20#x09#x0A#x0D]+ {ws=explicit}
 
 /* NUMBERS */
 FloatConst      ::= "-"? ("0" | [1-9] DIGIT*) ("." [0-9]+)? EXP? {ws=explicit}
