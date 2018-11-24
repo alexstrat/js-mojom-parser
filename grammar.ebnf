@@ -7,7 +7,7 @@ ModuleStatement ::= AttributeSection? "module" WS+ Identifier ";"
 ImportStatement ::= "import" WS+ StringLiteral ";"
 Definition ::= Struct | Union | Interface | Enum | Const
 
-
+/* ATTRIBUTES */
 AttributeSection ::= "[" AttributeList "]"
 AttributeList ::= (Attribute ("," Attribute)*)?
 Attribute ::= Name ("=" (Name|Literal))?
