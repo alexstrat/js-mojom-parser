@@ -22,13 +22,11 @@ Union ::= AttributeSection? "union" Name "{" UnionField* "}" ";"
 UnionField ::= AttributeSection? TypeSpec Name Ordinal? ";"
 
 /* INTERFACE */
-Interface ::= AttributeSection "interface" Name "{" InterfaceBody "}" ";"
-InterfaceBody ::= (InterfaceBody Const | InterfaceBody Enum | InterfaceBody Method)?
-Method ::= AttributeSection Name Ordinal "(" ParameterList ")" Response ";"
-ParameterList ::= NonEmptyParameterList?
-NonEmptyParameterList ::= (Parameter ("," Parameter)*)
-Parameter ::= AttributeSection TypeSpec Name Ordinal
-Response ::= ("=>" "(" ParameterList ")")?
+Interface ::= AttributeSection? "interface" Name "{" (Const | Enum | Method)* "}" ";"
+Method ::= AttributeSection? Name Ordinal? "(" ParameterList? ")" Response? ";"
+ParameterList ::= (Parameter ("," Parameter)*)
+Parameter ::= AttributeSection? TypeSpec Name Ordinal?
+Response ::= ("=>" "(" ParameterList ")")
 
 
 TypeSpec ::= TypeName Nullable?
