@@ -1,6 +1,6 @@
 { ws=implicit }
 MojomFile ::= StatementList
-StatementList ::= Statement StatementList | Statement
+StatementList ::= Statement*
 Statement ::= ModuleStatement | ImportStatement | Definition
 
 ModuleStatement ::= AttributeSection "module" Identifier ";"
@@ -9,9 +9,8 @@ Definition ::= Struct Union Interface Enum Const
 
 
 AttributeSection ::= "[" AttributeList "]"
-AttributeList ::= NonEmptyAttributeList?
-NonEmptyAttributeList ::= Attribute | Attribute "," NonEmptyAttributeList
-Attribute ::= Name | Name "=" Name | Name "=" Literal
+AttributeList ::= (Attribute ("," Attribute)*)?
+Attribute ::= Name ("=" (Name|Literal))?
 
 Struct ::= AttributeSection "struct" Name "{" StructBody "}" ";" | AttributeSection "struct" Name ";"
 StructBody ::= (StructBody Const | StructBody Enum | StructBody StructField)?
@@ -20,11 +19,12 @@ StructField ::= AttributeSection TypeSpec Name Ordinal Default ";"
 Union ::= AttributeSection "union" Name "{" UnionBody "}" ";"
 UnionBody ::= (UnionBody UnionField)?
 UnionField ::= AttributeSection TypeSpec Name Ordinal ";"
+
 Interface ::= AttributeSection "interface" Name "{" InterfaceBody "}" ";"
 InterfaceBody ::= (InterfaceBody Const | InterfaceBody Enum | InterfaceBody Method)?
 Method ::= AttributeSection Name Ordinal "(" ParameterList ")" Response ";"
 ParameterList ::= NonEmptyParameterList?
-NonEmptyParameterList ::= Parameter | Parameter "," NonEmptyParameterList
+NonEmptyParameterList ::= (Parameter ("," Parameter)*)
 Parameter ::= AttributeSection TypeSpec Name Ordinal
 Response ::= ("=>" "(" ParameterList ")")?
 
@@ -48,7 +48,7 @@ Ordinal ::= OrdinalValue?
 Default ::= ("=" Constant)?
 
 Enum ::= AttributeSection "enum" Name "{" NonEmptyEnumValueList "}" ";"| AttributeSection "enum" Name "{" NonEmptyEnumValueList "," "}" ";"
-NonEmptyEnumValueList ::= EnumValue | EnumValue "," NonEmptyEnumValueList
+NonEmptyEnumValueList ::= (EnumValue ("," EnumValue)*)
 EnumValue ::= AttributeSection Name | AttributeSection Name "=" Integer | AttributeSection Name "=" Identifier
 
 Const ::= "const" TypeSpec Name "=" Constant ";"
