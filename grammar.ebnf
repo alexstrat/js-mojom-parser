@@ -3,7 +3,7 @@ MojomFile ::= StatementList
 StatementList ::= Statement*
 Statement ::= ModuleStatement | ImportStatement | Definition
 
-ModuleStatement ::= AttributeSection "module" Identifier ";"
+ModuleStatement ::= AttributeSection? "module" WS+ Identifier ";"
 ImportStatement ::= "import" StringLiteral ";"
 Definition ::= Struct Union Interface Enum Const
 
@@ -69,6 +69,7 @@ IntConstDec ::= "0" | [1-9][0-9]* {ws=explicit}
 IntConstHex ::= "0"[xX][0-9a-fA-F]+ {ws=explicit}
 OrdinalValue ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
 
+WS ::= [#x20#x09#x0A#x0D]+ /* Space | Tab | \n | \r */
 
 /* NUMBERS */
 FloatConst      ::= "-"? ("0" | [1-9] DIGIT*) ("." [0-9]+)? EXP? {ws=explicit}
