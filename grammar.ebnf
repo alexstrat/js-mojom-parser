@@ -47,9 +47,9 @@ Ordinal ::= OrdinalValue?
 
 Default ::= ("=" Constant)?
 
-Enum ::= AttributeSection "enum" Name "{" NonEmptyEnumValueList "}" ";"| AttributeSection "enum" Name "{" NonEmptyEnumValueList "," "}" ";"
+Enum ::= AttributeSection? "enum" Name "{" NonEmptyEnumValueList ","? "}" ";"
 NonEmptyEnumValueList ::= (EnumValue ("," EnumValue)*)
-EnumValue ::= AttributeSection Name | AttributeSection Name "=" Integer | AttributeSection Name "=" Identifier
+EnumValue ::= AttributeSection? Name ("=" (Integer|Identifier))?
 
 Const ::= "const" TypeSpec Name "=" Constant ";"
 
