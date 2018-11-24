@@ -4,8 +4,8 @@ StatementList ::= Statement*
 Statement ::= ModuleStatement | ImportStatement | Definition
 
 ModuleStatement ::= AttributeSection? "module" WS+ Identifier ";"
-Definition ::= Struct Union Interface Enum Const
 ImportStatement ::= "import" WS+ StringLiteral ";"
+Definition ::= Struct | Union | Interface | Enum | Const
 
 
 AttributeSection ::= "[" AttributeList "]"
