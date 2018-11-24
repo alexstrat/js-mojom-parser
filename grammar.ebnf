@@ -31,7 +31,8 @@ Parameter ::= AttributeSection TypeSpec Name Ordinal
 Response ::= ("=>" "(" ParameterList ")")?
 
 
-TypeSpec ::= TypeName "?" | TypeName
+NullableTypeName ::= TypeName "?"
+TypeSpec ::= NullableTypeName | TypeName
 TypeName ::= BasicTypeName /*| Array | FixedArray | Map | InterfaceRequest*/
 
 BasicTypeName ::= Identifier | "associated" Identifier | HandleType | NumericType
