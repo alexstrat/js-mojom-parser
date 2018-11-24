@@ -31,11 +31,12 @@ Parameter ::= AttributeSection TypeSpec Name Ordinal
 Response ::= ("=>" "(" ParameterList ")")?
 
 
-NullableTypeName ::= TypeName "?"
-TypeSpec ::= NullableTypeName | TypeName
-TypeName ::= BasicTypeName /*| Array | FixedArray | Map | InterfaceRequest*/
+TypeSpec ::= TypeName Nullable?
+Nullable ::= "?"
+Associated ::= "associated"
+TypeName ::=  Array | FixedArray | Map | InterfaceRequest | BasicTypeName
 
-BasicTypeName ::= Identifier | "associated" Identifier | HandleType | NumericType
+BasicTypeName ::= Associated? Identifier | HandleType | NumericType
 NumericType ::= "bool" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64" | "float" | "double"
 HandleType ::= "handle" | "handle" "<" SpecificHandleType ">"
 SpecificHandleType ::= "message_pipe" | "shared_buffer" | "data_pipe_consumer" | "data_pipe_producer"
@@ -44,7 +45,7 @@ Array ::= "array" "<" TypeSpec ">"
 FixedArray ::= "array" "<" TypeSpec "," IntConstDec ">"
 Map ::= "map" "<" Identifier "," TypeSpec ">"
 
-InterfaceRequest ::= Identifier "&" | "associated" Identifier "&"
+InterfaceRequest ::= Associated? Identifier "&"
 
 Default ::= ("=" Constant)?
 
