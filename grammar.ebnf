@@ -1,3 +1,4 @@
+{ ws=implicit }
 MojomFile ::= StatementList
 StatementList ::= Statement StatementList | Statement
 Statement ::= ModuleStatement | ImportStatement | Definition
@@ -54,29 +55,30 @@ Const ::= "const" TypeSpec Name "=" Constant ";"
 
 Constant ::= Literal | Identifier ";"
 
-Identifier ::= Name | Name "." Identifier
+Identifier ::= (Name ("." Name)*) {ws=explicit}
 
 Literal ::= Integer | Float | "true" | "false" | "default" | StringLiteral
 
-Integer ::= IntConst | "+" IntConst | "-" IntConst
-IntConst ::= IntConstDec | IntConstHex
+Integer ::= IntConst | "+" IntConst | "-" IntConst {ws=explicit}
+IntConst ::= IntConstDec | IntConstHex {ws=explicit}
 
-Float ::= FloatConst | "+" FloatConst | "-" FloatConst
+Float ::= FloatConst | "+" FloatConst | "-" FloatConst {ws=explicit}
 
-Name ::= [a-zA-Z_][0-9a-zA-Z_]*
-IntConstDec ::= "0" | [1-9][0-9]*
-IntConstHex ::= "0"[xX][0-9a-fA-F]+
-OrdinalValue ::= "@"("0"|([1-9][0-9]*))
+Name ::= [a-zA-Z_][0-9a-zA-Z_]* {ws=explicit}
+IntConstDec ::= "0" | [1-9][0-9]* {ws=explicit}
+IntConstHex ::= "0"[xX][0-9a-fA-F]+ {ws=explicit}
+OrdinalValue ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
+
 
 /* NUMBERS */
-FloatConst      ::= "-"? ("0" | [1-9] DIGIT*) ("." [0-9]+)? EXP?
-DIGIT           ::= [0-9]
-EXP             ::= ("e" | "E") ( "-" | "+" )? ("0" | [1-9] [0-9]*)
+FloatConst      ::= "-"? ("0" | [1-9] DIGIT*) ("." [0-9]+)? EXP? {ws=explicit}
+DIGIT           ::= [0-9] {ws=explicit}
+EXP             ::= ("e" | "E") ( "-" | "+" )? ("0" | [1-9] [0-9]*) {ws=explicit}
 
 /* STRINGS */
-StringLiteral   ::= '"' CHAR* '"'
-ESCAPE          ::= #x5C /* \ */
-HEXDIG          ::= [a-fA-F0-9]
-ESCAPABLE       ::= #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 HEXDIG HEXDIG HEXDIG HEXDIG
-CHAR            ::= UNESCAPED | ESCAPE ESCAPABLE
-UNESCAPED       ::= [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF]
+StringLiteral   ::= '"' CHAR* '"' {ws=explicit}
+ESCAPE          ::= #x5C /* \ */ {ws=explicit}
+HEXDIG          ::= [a-fA-F0-9] {ws=explicit}
+ESCAPABLE       ::= #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 HEXDIG HEXDIG HEXDIG HEXDIG {ws=explicit}
+CHAR            ::= UNESCAPED | ESCAPE ESCAPABLE {ws=explicit}
+UNESCAPED       ::= [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF] {ws=explicit}
