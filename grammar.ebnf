@@ -55,7 +55,7 @@ EnumValue ::= AttributeSection? Name ("=" (Integer|Identifier))?
 
 /* CONSTANTS */
 Const ::= "const" TypeSpec Name "=" Constant ";"
-Constant ::= Literal | Identifier ";"
+Constant ::= Literal | Identifier
 
 Identifier ::= (Name ("." Name)*) {ws=explicit}
 
