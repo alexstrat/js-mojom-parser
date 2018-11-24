@@ -12,10 +12,11 @@ AttributeSection ::= "[" AttributeList "]"
 AttributeList ::= (Attribute ("," Attribute)*)?
 Attribute ::= Name ("=" (Name|Literal))?
 
-Struct ::= AttributeSection "struct" Name "{" StructBody "}" ";" | AttributeSection "struct" Name ";"
 /* STRUCT */
-StructBody ::= (StructBody Const | StructBody Enum | StructBody StructField)?
-StructField ::= AttributeSection TypeSpec Name Ordinal Default ";"
+Struct ::= AttributeSection? "struct" Name ("{" StructBody "}")? ";"
+/*StructBody ::= (StructBody Const | StructBody Enum | StructBody StructField)?*/
+StructBody ::= (Const | Enum | StructField)*
+StructField ::= AttributeSection? TypeSpec Name Ordinal? Default? ";"
 
 /* UNION */
 Union ::= AttributeSection "union" Name "{" UnionBody "}" ";"
