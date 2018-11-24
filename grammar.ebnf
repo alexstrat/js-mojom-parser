@@ -22,7 +22,8 @@ Union ::= AttributeSection? "union" Name "{" UnionField* "}" ";"
 UnionField ::= AttributeSection? TypeSpec Name Ordinal? ";"
 
 /* INTERFACE */
-Interface ::= AttributeSection? "interface" Name "{" (Const | Enum | Method)* "}" ";"
+Interface ::= AttributeSection? "interface" Name "{" InterfaceBody? "}" ";"
+InterfaceBody ::= (Const | Enum | Method)*
 Method ::= AttributeSection? Name Ordinal? "(" ParameterList? ")" Response? ";"
 ParameterList ::= (Parameter ("," Parameter)*)
 Parameter ::= AttributeSection? TypeSpec Name Ordinal?
