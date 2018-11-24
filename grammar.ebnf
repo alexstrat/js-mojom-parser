@@ -18,9 +18,8 @@ StructBody ::= (Const | Enum | StructField)*
 StructField ::= AttributeSection? TypeSpec Name Ordinal? Default? ";"
 
 /* UNION */
-Union ::= AttributeSection "union" Name "{" UnionBody "}" ";"
-UnionBody ::= (UnionBody UnionField)?
-UnionField ::= AttributeSection TypeSpec Name Ordinal ";"
+Union ::= AttributeSection? "union" Name "{" UnionField* "}" ";"
+UnionField ::= AttributeSection? TypeSpec Name Ordinal? ";"
 
 /* INTERFACE */
 Interface ::= AttributeSection "interface" Name "{" InterfaceBody "}" ";"
