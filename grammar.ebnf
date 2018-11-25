@@ -1,0 +1,90 @@
+{ ws=implicit }
+MojomFile ::= StatementList
+StatementList ::= Statement*
+Statement ::= ModuleStatement | ImportStatement | Definition
+
+ModuleStatement ::= AttributeSection? "module" WS+ Identifier ";"
+ImportStatement ::= "import" WS+ StringLiteral ";"
+Definition ::= Struct | Union | Interface | Enum | Const
+
+/* ATTRIBUTES */
+AttributeSection ::= "[" AttributeList "]"
+AttributeList ::= (Attribute ("," Attribute)*)?
+Attribute ::= Name ("=" (Name|Literal))?
+
+/* STRUCT */
+Struct ::= AttributeSection? "struct" Name ("{" StructBody "}")? ";"
+StructBody ::= (Const | Enum | StructField)*
+StructField ::= AttributeSection? TypeSpec Name Ordinal? Default? ";"
+
+/* UNION */
+Union ::= AttributeSection? "union" Name "{" UnionField* "}" ";"
+UnionField ::= AttributeSection? TypeSpec Name Ordinal? ";"
+
+/* INTERFACE */
+Interface ::= AttributeSection? "interface" Name "{" InterfaceBody? "}" ";"
+InterfaceBody ::= (Const | Enum | Method)*
+Method ::= AttributeSection? Name Ordinal? "(" ParameterList? ")" Response? ";"
+ParameterList ::= (Parameter ("," Parameter)*)
+Parameter ::= AttributeSection? TypeSpec Name Ordinal?
+Response ::= ("=>" "(" ParameterList ")")
+
+
+TypeSpec ::= TypeName Nullable?
+Nullable ::= "?"
+Associated ::= "associated"
+TypeName ::=  Array | FixedArray | Map | InterfaceRequest | BasicTypeName
+
+BasicTypeName ::=  HandleType | NumericType | Associated? Identifier
+NumericType ::= "bool" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64" | "float" | "double"
+HandleType ::= "handle" ("<" SpecificHandleType ">")?
+SpecificHandleType ::= "message_pipe" | "shared_buffer" | "data_pipe_consumer" | "data_pipe_producer"
+
+Array ::= "array" "<" TypeSpec ">"
+FixedArray ::= "array" "<" TypeSpec "," IntConstDec ">"
+Map ::= "map" "<" Identifier "," TypeSpec ">"
+
+InterfaceRequest ::= Associated? Identifier "&"
+
+Default ::= ("=" Constant)?
+
+/* ENUMS */
+Enum ::= AttributeSection? "enum" Name "{" NonEmptyEnumValueList ","? "}" ";"
+NonEmptyEnumValueList ::= (EnumValue ("," EnumValue)*)
+EnumValue ::= AttributeSection? Name ("=" (Integer|Identifier))?
+
+/* CONSTANTS */
+Const ::= "const" TypeSpec Name "=" Constant ";"
+Constant ::= Literal | Identifier
+
+
+Identifier ::= (Name ("." Name)*) {ws=explicit}
+
+Literal ::= Integer | Float | "true" | "false" | "default" | StringLiteral
+
+Integer ::= IntConst | "+" IntConst | "-" IntConst {ws=explicit}
+IntConst ::= IntConstDec | IntConstHex {ws=explicit}
+
+Float ::= FloatConst | "+" FloatConst | "-" FloatConst {ws=explicit}
+
+Name ::= [a-zA-Z_][0-9a-zA-Z_]* {ws=explicit}
+IntConstDec ::= "0" | [1-9][0-9]* {ws=explicit}
+IntConstHex ::= "0"[xX][0-9a-fA-F]+ {ws=explicit}
+Ordinal ::= "@"("0"|([1-9][0-9]*)) {ws=explicit}
+
+EOL               ::= [#x0A#x0D]+ {ws=explicit}
+Comment           ::= '//' (![#x0A#x0D] [#x00-#xFFFF])* EOL {ws=explicit}
+WS                ::= Comment | [#x20#x09#x0A#x0D]+ {ws=explicit}
+
+/* NUMBERS */
+FloatConst      ::= "-"? ("0" | [1-9] DIGIT*) ("." [0-9]+)? EXP? {ws=explicit}
+DIGIT           ::= [0-9] {ws=explicit}
+EXP             ::= ("e" | "E") ( "-" | "+" )? ("0" | [1-9] [0-9]*) {ws=explicit}
+
+/* STRINGS */
+StringLiteral   ::= '"' CHAR* '"' {ws=explicit}
+ESCAPE          ::= #x5C /* \ */ {ws=explicit}
+HEXDIG          ::= [a-fA-F0-9] {ws=explicit}
+ESCAPABLE       ::= #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 HEXDIG HEXDIG HEXDIG HEXDIG {ws=explicit}
+CHAR            ::= UNESCAPED | ESCAPE ESCAPABLE {ws=explicit}
+UNESCAPED       ::= [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF] {ws=explicit}
