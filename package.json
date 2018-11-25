@@ -1,0 +1,39 @@
+{
+  "name": "y",
+  "version": "0.0.1",
+  "description": "Parser for the Mojom IDL",
+  "main": "index.js",
+  "watch": {
+    "build:rules": {
+      "patterns": [
+        "grammar.ebnf"
+      ]
+    },
+    "test": {
+      "patterns": [
+        "grammar.ebnf",
+        "**/*.ts",
+        "test/example.mojom"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "ts-node test/index.ts",
+    "build:rules": "ts-node utils/compile-rules.ts",
+    "watch:rules": "npm-watch build:rules",
+    "watch:test": "npm-watch test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ebnf": "^1.6.3",
+    "npm-watch": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.10",
+    "treeify": "^1.1.0",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  }
+}

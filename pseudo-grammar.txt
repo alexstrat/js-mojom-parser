@@ -1,0 +1,93 @@
+// https://chromium.googlesource.com/chromium/src/+/master/mojo/public/tools/bindings/README.md
+
+MojomFile = StatementList
+StatementList = Statement StatementList | Statement
+Statement = ModuleStatement | ImportStatement | Definition
+
+ModuleStatement = AttributeSection "module" Identifier ";"
+ImportStatement = "import" StringLiteral ";"
+Definition = Struct Union Interface Enum Const
+
+AttributeSection = "[" AttributeList "]"
+AttributeList = <empty> | NonEmptyAttributeList
+NonEmptyAttributeList = Attribute
+                      | Attribute "," NonEmptyAttributeList
+Attribute = Name
+          | Name "=" Name
+          | Name "=" Literal
+
+Struct = AttributeSection "struct" Name "{" StructBody "}" ";"
+       | AttributeSection "struct" Name ";"
+StructBody = <empty>
+           | StructBody Const
+           | StructBody Enum
+           | StructBody StructField
+StructField = AttributeSection TypeSpec Name Ordinal Default ";" /* "Ordinal" was marked as "Original"*/
+
+Union = AttributeSection "union" Name "{" UnionBody "}" ";"
+UnionBody = <empty> | UnionBody UnionField
+UnionField = AttributeSection TypeSpec Name Ordinal ";"
+
+Interface = AttributeSection "interface" Name "{" InterfaceBody "}" ";"
+InterfaceBody = <empty>
+              | InterfaceBody Const
+              | InterfaceBody Enum
+              | InterfaceBody Method
+Method = AttributeSection Name Ordinal "(" ParamterList ")" Response ";"
+ParameterList = <empty> | NonEmptyParameterList
+NonEmptyParameterList = Parameter
+                      | Parameter "," NonEmptyParameterList
+Parameter = AttributeSection TypeSpec Name Ordinal
+Response = <empty> | "=>" "(" ParameterList ")"
+
+TypeSpec = TypeName "?" | TypeName
+TypeName = BasicTypeName
+         | Array
+         | FixedArray
+         | Map
+         | InterfaceRequest
+BasicTypeName = Identifier | "associated" Identifier | HandleType | NumericType
+NumericType = "bool" | "int8" | "uint8" | "int16" | "uint16" | "int32"
+            | "uint32" | "int64" | "uint64" | "float" | "double"
+HandleType = "handle" | "handle" "<" SpecificHandleType ">"
+SpecificHandleType = "message_pipe"
+                   | "shared_buffer"
+                   | "data_pipe_consumer"
+                   | "data_pipe_producer"
+Array = "array" "<" TypeSpec ">"
+FixedArray = "array" "<" TypeSpec "," IntConstDec ">"
+Map = "map" "<" Identifier "," TypeSpec ">"
+InterfaceRequest = Identifier "&" | "associated" Identifier "&"
+
+Ordinal = <empty> | OrdinalValue
+
+Default = <empty> | "=" Constant
+
+Enum = AttributeSection "enum" Name "{" NonEmptyEnumValueList "}" ";"
+     | AttributeSection "enum" Name "{" NonEmptyEnumValueList "," "}" ";"
+NonEmptyEnumValueList = EnumValue | NonEmptyEnumValueList "," EnumValue
+EnumValue = AttributeSection Name
+          | AttributeSection Name "=" Integer
+          | AttributeSection Name "=" Identifier
+
+Const = "const" TypeSpec Name "=" Constant ";"
+
+Constant = Literal | Identifier ";"
+
+Identifier = Name | Name "." Identifier
+
+Literal = Integer | Float | "true" | "false" | "default" | StringLiteral
+
+Integer = IntConst | "+" IntConst | "-" IntConst
+IntConst = IntConstDec | IntConstHex
+
+Float = FloatConst | "+" FloatConst | "-" FloatConst
+
+; The rules below are for tokens matched strictly according to the given regexes
+
+Name = /[a-zA-Z_][0-9a-zA-Z_]*/ // wrongly defined as Identifier in original doc
+IntConstDec = /0|(1-9[0-9]*)/
+IntConstHex = /0[xX][0-9a-fA-F]+/
+OrdinalValue = /@(0|(1-9[0-9]*))/
+FloatConst = ... # Imagine it's close enough to C-style float syntax.
+StringLiteral = ... # Imagine it's close enough to C-style string literals, including escapes.
