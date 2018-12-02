@@ -1,0 +1,26 @@
+{
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/__tests__/*.ts"
+  ],
+  "compilerOptions": {
+    "target": "es5",
+    "rootDir": "./src",
+    "outDir": "lib",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "removeComments": false,
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "skipLibCheck": true
+  }
+}

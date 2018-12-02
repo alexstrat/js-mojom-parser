@@ -2,7 +2,7 @@
   "name": "y",
   "version": "0.0.1",
   "description": "Parser for the Mojom IDL",
-  "main": "index.js",
+  "main": "lib/index.js",
   "watch": {
     "test": {
       "patterns": [
@@ -14,8 +14,9 @@
   },
   "scripts": {
     "test": "npm run compile && ts-node test/index.ts",
-    "compile": "nearleyc grammar.ne -o grammar.ts",
     "watch:test": "npm-watch test"
+    "grammar:compile": "nearleyc src/grammar.ne -o src/grammar.ts",
+    "build": "npm run clean && npm run grammar:compile && npm run ts:build",
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "@types/nearley": "^2.11.0",
     "@types/node": "^10.12.10",
     "npm-watch": "^0.4.0",
+    "rimraf": "^2.6.2",
     "treeify": "^1.1.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",

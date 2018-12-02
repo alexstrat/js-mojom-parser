@@ -3,8 +3,6 @@
 @builtin "string.ne"
 @builtin "whitespace.ne"
 
-@{% function nuller() { return null; } %}
-@{% function joiner(d) { return d.join(''); } %}
 @{% const nth = i => d => d[i] %}
 
 # ENTRY

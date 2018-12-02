@@ -1,3 +1,9 @@
+# generated grammar
+src/grammar.ts
+
+# generated JS after TS
+lib/
+
 # Logs
 logs
 *.log
