@@ -5,6 +5,8 @@
 
 @{% const nth = i => d => d[i] %}
 
+@{% const RESERVED_TYPES = ['bool', 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'float', 'double', 'string', 'handle'] %}
+
 # ENTRY
 MojomFile -> (_ Statement _ {% nth(1) %}):* {% d => ({
   type: 'Mojom',
@@ -71,21 +73,44 @@ Response -> ("=>" "(" ParameterList ")")
 
 TypeSpec -> TypeName Nullable:?
 Nullable -> "?"
-Associated -> "associated"
-TypeName ->  Array | FixedArray | Map | InterfaceRequest | BasicTypeName
+TypeName ->
+    PrimitiveType {% d => ({ type: 'PrimitiveType', value: d[0]}) %}
+  | Array
+  | FixedArray
+  | Map
+  | HandleType
+  | InterfaceType {% id %}
 
-BasicTypeName ->  HandleType | NumericType | Associated:? Identifier
-NumericType -> "bool" | "int8" | "uint8" | "int16" | "uint16" | "int32" | "uint32" | "int64" | "uint64" | "float" | "double"
-HandleType -> "handle" ("<" SpecificHandleType ">"):?
-SpecificHandleType -> "message_pipe" | "shared_buffer" | "data_pipe_consumer" | "data_pipe_producer"
+PrimitiveType ->
+    "bool"    {% id %}
+  | "int8"    {% id %}
+  | "uint8"   {% id %}
+  | "int16"   {% id %}
+  | "uint16"  {% id %}
+  | "int32"   {% id %}
+  | "uint32"  {% id %}
+  | "int64"   {% id %}
+  | "uint64"  {% id %}
+  | "float"   {% id %}
+  | "double"  {% id %}
+  | "string"  {% id %}
 
 Array -> "array" "<" TypeSpec ">"
 FixedArray -> "array" "<" TypeSpec "," IntConstDec ">"
 Map -> "map" "<" Identifier "," TypeSpec ">"
 
-InterfaceRequest -> Associated:? Identifier "&"
+HandleType -> "handle" ("<" SpecificHandleType ">"):?
+SpecificHandleType -> "message_pipe" | "shared_buffer" | "data_pipe_consumer" | "data_pipe_producer"
 
-Default -> ("=" Constant):?
+Associated -> "associated" __ {% () => true %}
+InterfaceType -> Associated:? Identifier "&":? {% d => ({
+    type: 'InterfaceType',
+    identifier: d[1],
+    isRequest: d[2] ? true : false,
+    isAssociate: d[0] ? true : false,
+  })
+%}
+
 
 # ENUMS
 Enum -> AttributeSection:? "enum" Name "{" NonEmptyEnumValueList ",":? "}" ";"
@@ -93,14 +118,29 @@ NonEmptyEnumValueList -> (EnumValue ("," EnumValue):*)
 EnumValue -> AttributeSection:? Name ("=" (Integer|Identifier)):?
 
 # CONSTANTS
-Const -> "const" TypeSpec Name "=" Constant ";"
-Constant -> Literal | Identifier
-
-
-Identifier -> Name ("." Name {% nth(1) %}):* {% d => ({
-  type: 'Identifier',
-  name: [d[0], ...d[1]]
+Const -> "const" __ TypeName __ Name _ "=" _ Constant _ ";" {% data => ({
+    type: "ConstDefinition",
+    name: data[4],
+    value: data[8],
+    typing: data[2]
   })
+%}
+Constant -> 
+    Literal    {% id %}
+  | Identifier {% id %}
+
+
+Identifier -> Name ("." Name {% nth(1) %}):* {% (d,l, reject) => {
+  // reject identifier that matches a reserved type
+  const name = [d[0], ...d[1]];
+  if (RESERVED_TYPES.indexOf(name.join('')) !== -1) {
+    return reject;
+  }
+  return {
+    type: 'Identifier',
+    name: name
+  }
+}
 %}
 
 Literal ->

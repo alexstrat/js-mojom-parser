@@ -8,5 +8,6 @@ export function getAST(sourceCode: string) {
   const results = parser.results;
 
   if(results.length == 0) throw new Error('Nothing to parse');
+  if (results.length > 1) console.warn('Ambiguous');
   return results[0];
 }
