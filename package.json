@@ -3,17 +3,30 @@
   "version": "0.0.1",
   "description": "Parser for the Mojom IDL",
   "main": "index.js",
-  "watch": {},
+  "watch": {
+    "test": {
+      "patterns": [
+        "**/*.{ts,ne,mojom}"
+      ],
+      "ignore": "grammar.ts",
+      "extensions": "ts,ne,mojom"
+    }
+  },
   "scripts": {
-    "test": "echo 1;"
+    "test": "npm run compile && ts-node test/index.ts",
+    "compile": "nearleyc grammar.ne -o grammar.ts",
+    "watch:test": "npm-watch test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "npm-watch": "^0.4.0"
+    "nearley": "^2.15.1"
   },
   "devDependencies": {
+    "@types/nearley": "^2.11.0",
     "@types/node": "^10.12.10",
+    "npm-watch": "^0.4.0",
+    "treeify": "^1.1.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6"
