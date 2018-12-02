@@ -54,9 +54,29 @@ AttributeValue ->
   | Literal {% id %}
 
 # STRUCT
-Struct -> AttributeSection:? _ "struct" __ Name _ ("{" StructBody "}"):? _ ";"
-StructBody -> (Const | Enum | StructField):*
-StructField -> AttributeSection:? TypeSpec Name Ordinal:? Default:? ";"
+Struct -> AttributeSection:? _ "struct" __ Name _ ("{" StructBody "}" {% nth(1) %}):? _ ";" {% (data) => ({
+    type: 'StructDefinition',
+    name: data[4],
+    attributes: data[0],
+    body: data[6],
+  })
+%}
+StructBody -> ( _ (
+    Const        {% id %}
+  | Enum         {% id %}
+  | StructField  {% id %}
+) _ {%nth(1)%}):* {% id %}
+
+StructField -> AttributeSection:? TypeSpec __ Name Ordinal:? _ Default:? ";" {% d => ({
+    type: 'StructField',
+    attributes: d[0] || [],
+    typing: d[1],
+    name: d[3],
+    ordinalValue: d[4],
+    defaultValue: d[6]
+  })
+%}
+Default -> "=" _ Constant {% nth(2) %}
 
 # UNION
 Union -> AttributeSection:? "union" Name "{" UnionField:* "}" ";"
@@ -71,8 +91,7 @@ Parameter -> AttributeSection:? TypeSpec Name Ordinal:?
 Response -> ("=>" "(" ParameterList ")")
 
 
-TypeSpec -> TypeName Nullable:?
-Nullable -> "?"
+# TYPES
 TypeName ->
     PrimitiveType {% d => ({ type: 'PrimitiveType', value: d[0]}) %}
   | Array
@@ -111,6 +130,13 @@ InterfaceType -> Associated:? Identifier "&":? {% d => ({
   })
 %}
 
+Nullable -> "?"
+TypeSpec -> TypeName Nullable:? {% d => ({
+    type: 'TypeSpec',
+    typing: d[0],
+    nullable:  d[1] ? true : false
+  })
+%}
 
 # ENUMS
 Enum -> AttributeSection:? "enum" Name "{" NonEmptyEnumValueList ",":? "}" ";"
@@ -157,7 +183,7 @@ IntConst -> IntConstDec | IntConstHex
 Name -> [a-zA-Z_] [0-9a-zA-Z_]:* {% d => [d[0], ...d[1]].join('') %}
 IntConstDec -> "0" | [1-9] [0-9]:*
 IntConstHex -> "0" [xX] [0-9a-fA-F]:+
-Ordinal -> "@" ("0"|([1-9] [0-9]:*))
+Ordinal -> "@" unsigned_int {% nth(1) %}
 
 EOL               -> [\\x0A\\x0D]:+
 Comment           -> "//" ([^\\x0A\\x0D] [\\x00-\\xFFFF]):* EOL
