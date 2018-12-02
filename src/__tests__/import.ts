@@ -1,6 +1,7 @@
-import { getAST } from "../index";
-describe("Import statements", () => {
-  it("single statement", () => {
+import { getAST } from '../index';
+
+describe('Import statements', () => {
+  it('single statement', () => {
     const mojo = `
 import "foo";
     `;
@@ -17,7 +18,7 @@ Object {
 `);
   });
 
-  it("double statement", () => {
+  it('double statement', () => {
     const mojo = `
 import "foo";
 
