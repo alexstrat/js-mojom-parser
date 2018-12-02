@@ -5,22 +5,56 @@
 
 @{% function nuller() { return null; } %}
 @{% function joiner(d) { return d.join(''); } %}
+@{% const nth = i => d => d[i] %}
 
-MojomFile -> StatementList
-StatementList -> _ Statement:* _
-Statement -> ModuleStatement | ImportStatement | Definition
+# ENTRY
+MojomFile -> (_ Statement _ {% nth(1) %}):* {% d => ({
+  type: 'Mojom',
+  body: d[0] || []
+}) %}
+Statement ->
+    ModuleStatement {% id %}
+  | ImportStatement {% id %}
+  | Definition      {% id %}
 
-ModuleStatement -> AttributeSection:? "module" WS:+ Identifier ";"
-ImportStatement -> "import" WS:+ dqstring ";"
-Definition -> Struct | Union | Interface | Enum | Const
+
+# MODULES
+ModuleStatement -> AttributeSection:? _ "module" __ Identifier ";" {% d => ({
+    type: 'ModuleStatement',
+    namespace: d[4],
+    attributes: d[0] || [],
+  })
+%}
+
+# IMPORT
+ImportStatement -> "import" __ dqstring _ ";" {% (data) => ({
+    type: 'ImportStatement',
+    filename: data[2],
+  })
+%}
+
+Definition ->
+    Struct    {% id %}
+  | Union     {% id %}
+  | Interface {% id %}
+  | Enum      {% id %}
+  | Const     {% id %}
 
 # ATTRIBUTES
-AttributeSection -> "[" AttributeList "]"
-AttributeList -> (Attribute ("," Attribute):*):?
-Attribute -> Name ("=" (Name|Literal)):?
+AttributeSection -> "[" AttributeList:? "]" {% nth(1) %}
+AttributeList -> Attribute ("," Attribute {% nth(1) %}):* {% d => [d[0], ...d[1]] %}
+Attribute -> Name ("=" AttributeValue {% nth(1) %}):? {% d => ({
+    type: 'Attribute',
+    key: d[0],
+    value: d[1] ? d[1] : true // no value means flag
+  })
+%}
+AttributeValue ->
+    Name    {% id %}
+  | Literal {% id %}
 
 # STRUCT
-Struct -> AttributeSection:? "struct" Name ("{" StructBody "}"):? ";"
+Struct -> AttributeSection:? _ "struct" __ Name _ ("{" StructBody "}"):? _ ";"
 StructBody -> (Const | Enum | StructField):*
 StructField -> AttributeSection:? TypeSpec Name Ordinal:? Default:? ";"
 
@@ -65,14 +99,24 @@ Const -> "const" TypeSpec Name "=" Constant ";"
 Constant -> Literal | Identifier
 
 
-Identifier -> (Name ("." Name):*)
+Identifier -> Name ("." Name {% nth(1) %}):* {% d => ({
+  type: 'Identifier',
+  name: [d[0], ...d[1]]
+  })
+%}
 
-Literal -> Integer | jsonfloat | "true" | "false" | "default" | dqstring
+Literal ->
+    Integer   {% d => ({ type: 'Literal', kind: 'number', value: d[0] }) %}
+  | jsonfloat {% d => ({ type: 'Literal', kind: 'number', value: d[0] }) %}
+  | "true"    {% d => ({ type: 'Literal', kind: 'boolean', value: true }) %}
+  | "false"   {% d => ({ type: 'Literal', kind: 'boolean', value: false }) %}
+  | "default" {% d => ({ type: 'Literal', kind: 'default' }) %}
+  | dqstring  {% d => ({ type: 'Literal', kind: 'string', value: d[0] }) %}
 
 Integer -> IntConst | "+" IntConst | "-" IntConst
 IntConst -> IntConstDec | IntConstHex
 
-Name -> [a-zA-Z_] [0-9a-zA-Z_]:*
+Name -> [a-zA-Z_] [0-9a-zA-Z_]:* {% d => [d[0], ...d[1]].join('') %}
 IntConstDec -> "0" | [1-9] [0-9]:*
 IntConstHex -> "0" [xX] [0-9a-fA-F]:+
 Ordinal -> "@" ("0"|([1-9] [0-9]:*))
