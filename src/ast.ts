@@ -23,8 +23,16 @@ interface ASTNode {
  */
 export interface MojomNode extends ASTNode {
   type: NodeType.Mojom;
-  body: [ImportStatementNode | ModuleStatementNode];
+  body: [(ImportStatementNode | ModuleStatementNode | Definition)];
 };
+
+type Definition =
+    StructDefinitionNode
+  | UnionDefinitionNode
+//  | InterfaceDefinitionNode
+//  | EnumDefinitionNode
+  | ConstDefinitionNode
+;
 
 /**
  * Represents an "import" statement.
@@ -76,7 +84,7 @@ export interface ConstDefinitionNode extends ASTNode {
  */
 export interface IdentifierNode extends ASTNode {
   type: NodeType.Identifier;
-  name: string,
+  name: [string],
 }
 
 export enum LiteralKind {
@@ -172,7 +180,7 @@ export interface StructFieldNode extends ASTNode {
   attributes: [AttributeNode],
   typing: TypeSpecNode,
   name: string,
-  ordinalValue: number,
+  ordinalValue: number | null,
   defaultValue: ConstantNode,
 };
 
