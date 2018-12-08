@@ -19,6 +19,8 @@
     StructDefinitionNode,
     StructFieldNode,
     PrimitiveTypeNode,
+    UnionDefinitionNode,
+    UnionFieldNode,
   } from './ast';
 %}
 @{% const nth = i => d => d[i] %}
@@ -97,8 +99,21 @@ StructField -> AttributeSection:? TypeSpec __ Name Ordinal:? _ Default:? ";" {% 
 Default -> "=" _ Constant {% nth(2) %}
 
 # UNION
-Union -> AttributeSection:? "union" Name "{" UnionField:* "}" ";"
-UnionField -> AttributeSection:? TypeSpec Name Ordinal:? ";"
+Union -> AttributeSection:? _ "union" __ Name _ "{" (_ UnionField _ {% nth(1) %}):* "}" _ ";" {% (d): UnionDefinitionNode => ({
+    type: NodeType.UnionDefinition,
+    attributes:  d[0] || [],
+    name: d[4],
+    body: d[7],
+  })
+%}
+UnionField -> AttributeSection:? TypeSpec __ Name Ordinal:? ";" {% (d): UnionFieldNode => ({
+    type: NodeType.UnionField,
+    attributes:  d[0] || [],
+    typing: d[1],
+    name: d[3],
+    ordinalValue: d[4],
+  })
+%}
 
 # INTERFACE
 Interface -> AttributeSection:? "interface" Name "{" InterfaceBody:? "}" ";"
