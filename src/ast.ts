@@ -13,6 +13,8 @@ export enum NodeType {
   PrimitiveType = 'PrimitiveType',
   UnionDefinition = 'UnionDefinition',
   UnionField = 'UnionField',
+  EnumDefinition = 'EnumDefinition',
+  EnumValue = 'EnumValue',
 };
 
 interface ASTNode {
@@ -197,4 +199,18 @@ export interface UnionFieldNode extends ASTNode {
   typing: TypeSpecNode,
   name: string,
   ordinalValue: number | null,
+}
+
+export interface EnumDefinitionNode extends ASTNode {
+  type: NodeType.EnumDefinition,
+  attributes: [AttributeNode],
+  name: string,
+  body: [EnumValueNode],
+}
+
+export interface EnumValueNode extends ASTNode {
+  type: NodeType.EnumValue,
+  attributes: [AttributeNode],
+  name: string,
+  value: (null | number | IdentifierNode)
 }

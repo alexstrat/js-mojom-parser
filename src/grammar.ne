@@ -21,6 +21,8 @@
     PrimitiveTypeNode,
     UnionDefinitionNode,
     UnionFieldNode,
+    EnumDefinitionNode,
+    EnumValueNode,
   } from './ast';
 %}
 @{% const nth = i => d => d[i] %}
@@ -172,9 +174,21 @@ TypeSpec -> TypeName Nullable:? {% (d): TypeSpecNode => ({
 %}
 
 # ENUMS
-Enum -> AttributeSection:? "enum" Name "{" NonEmptyEnumValueList ",":? "}" ";"
-NonEmptyEnumValueList -> (EnumValue ("," EnumValue):*)
-EnumValue -> AttributeSection:? Name ("=" (Integer|Identifier)):?
+Enum -> AttributeSection:? "enum" __ Name _ "{" _ EnumValueList:? _ ",":? _ "}" _ ";" {% (d): EnumDefinitionNode => ({
+    type: NodeType.EnumDefinition,
+    attributes: d[0],
+    name: d[3],
+    body: d[7] || [],
+  })
+%}
+EnumValueList -> EnumValue (_ "," _ EnumValue {% nth(3) %}):* {% d => [d[0], ...d[1]] %}
+EnumValue -> AttributeSection:? Name _ ("=" _ (unsigned_int {% id %}| Identifier {% id %}){% nth(2) %}):? {% (data): EnumValueNode => ({
+    type: NodeType.EnumValue,
+    attributes: data[0] || [],
+    name: data[1],
+    value: data[3]
+  })
+%}
 
 # CONSTANTS
 Const -> "const" __ TypeName __ Name _ "=" _ Constant _ ";" {% (data): ConstDefinitionNode => ({
