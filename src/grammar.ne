@@ -89,13 +89,13 @@ StructBody -> ( _ (
   | StructField  {% id %}
 ) _ {%nth(1)%}):* {% id %}
 
-StructField -> AttributeSection:? TypeSpec __ Name Ordinal:? _ Default:? ";" {% (d): StructFieldNode => ({
+StructField -> AttributeSection:? _ TypeSpec __ Name Ordinal:? _ Default:? ";" {% (d): StructFieldNode => ({
     type: NodeType.StructField,
     attributes: d[0] || [],
-    typing: d[1],
-    name: d[3],
-    ordinalValue: d[4],
-    defaultValue: d[6]
+    typing: d[2],
+    name: d[4],
+    ordinalValue: d[5],
+    defaultValue: d[7]
   })
 %}
 Default -> "=" _ Constant {% nth(2) %}
@@ -108,12 +108,12 @@ Union -> AttributeSection:? _ "union" __ Name _ "{" (_ UnionField _ {% nth(1) %}
     body: d[7],
   })
 %}
-UnionField -> AttributeSection:? TypeSpec __ Name Ordinal:? ";" {% (d): UnionFieldNode => ({
+UnionField -> AttributeSection:? _ TypeSpec __ Name Ordinal:? ";" {% (d): UnionFieldNode => ({
     type: NodeType.UnionField,
     attributes:  d[0] || [],
-    typing: d[1],
-    name: d[3],
-    ordinalValue: d[4],
+    typing: d[2],
+    name: d[4],
+    ordinalValue: d[5],
   })
 %}
 
@@ -174,19 +174,19 @@ TypeSpec -> TypeName Nullable:? {% (d): TypeSpecNode => ({
 %}
 
 # ENUMS
-Enum -> AttributeSection:? "enum" __ Name _ "{" _ EnumValueList:? _ ",":? _ "}" _ ";" {% (d): EnumDefinitionNode => ({
+Enum -> AttributeSection:? _ "enum" __ Name _ "{" _ EnumValueList:? _ ",":? _ "}" _ ";" {% (d): EnumDefinitionNode => ({
     type: NodeType.EnumDefinition,
     attributes: d[0],
-    name: d[3],
-    body: d[7] || [],
+    name: d[4],
+    body: d[8] || [],
   })
 %}
 EnumValueList -> EnumValue (_ "," _ EnumValue {% nth(3) %}):* {% d => [d[0], ...d[1]] %}
-EnumValue -> AttributeSection:? Name _ ("=" _ (unsigned_int {% id %}| Identifier {% id %}){% nth(2) %}):? {% (data): EnumValueNode => ({
+EnumValue -> AttributeSection:? _ Name _ ("=" _ (unsigned_int {% id %}| Identifier {% id %}){% nth(2) %}):? {% (data): EnumValueNode => ({
     type: NodeType.EnumValue,
     attributes: data[0] || [],
-    name: data[1],
-    value: data[3]
+    name: data[2],
+    value: data[4]
   })
 %}
 
