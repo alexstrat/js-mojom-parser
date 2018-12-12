@@ -32,7 +32,7 @@ type Definition =
     StructDefinitionNode
   | UnionDefinitionNode
 //  | InterfaceDefinitionNode
-//  | EnumDefinitionNode
+  | EnumDefinitionNode
   | ConstDefinitionNode
 ;
 
