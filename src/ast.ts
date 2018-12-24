@@ -49,7 +49,7 @@ export interface ImportStatementNode extends ASTNode {
  */
 export interface ModuleStatementNode extends ASTNode {
   type: NodeType.ModuleStatement,
-  namespace: string;
+  namespace: IdentifierNode;
   attributes: [AttributeNode];
 };
 
