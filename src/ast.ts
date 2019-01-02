@@ -25,7 +25,7 @@ interface ASTNode {
  */
 export interface MojomNode extends ASTNode {
   type: NodeType.Mojom;
-  body: [(ImportStatementNode | ModuleStatementNode | Definition)];
+  body: (ImportStatementNode | ModuleStatementNode | Definition)[];
 };
 
 type Definition =
@@ -50,7 +50,7 @@ export interface ImportStatementNode extends ASTNode {
 export interface ModuleStatementNode extends ASTNode {
   type: NodeType.ModuleStatement,
   namespace: IdentifierNode;
-  attributes: [AttributeNode];
+  attributes: AttributeNode[];
 };
 
 /**
@@ -59,7 +59,7 @@ export interface ModuleStatementNode extends ASTNode {
 export interface AttributeNode extends ASTNode {
   type: NodeType.Attribute;
   key: string;
-  value: (number | string | boolean);
+  value?: (LiteralNode | string | true);
 }
 
 /**
@@ -67,6 +67,9 @@ export interface AttributeNode extends ASTNode {
  */
 export interface StructDefinitionNode extends ASTNode {
   type: NodeType.StructDefinition;
+  name: string;
+  attributes: AttributeNode[];
+  body: (ConstDefinitionNode | EnumDefinitionNode |StructFieldNode)[]
 }
 
 type ConstantNode = LiteralNode | IdentifierNode;
@@ -77,7 +80,7 @@ type ConstantNode = LiteralNode | IdentifierNode;
 export interface ConstDefinitionNode extends ASTNode {
   type: NodeType.ConstDefinition;
   name: string,
-  typing: TypeSpecNode;
+  typing: TypeNameNode;
   value: ConstantNode;
 }
 
@@ -86,7 +89,7 @@ export interface ConstDefinitionNode extends ASTNode {
  */
 export interface IdentifierNode extends ASTNode {
   type: NodeType.Identifier;
-  name: [string],
+  name: string[],
 }
 
 export enum LiteralKind {
@@ -129,7 +132,7 @@ export type LiteralNode = NumberLiteralNode | BooleanLiteralNode | StringLiteral
 export interface TypeSpecNode extends ASTNode {
   type: NodeType.TypeSpec;
   nullable: boolean;
-  typing: InterfaceTypeNode /* .. */;
+  typing: TypeNameNode;
 };
 
 /**
@@ -164,14 +167,23 @@ export interface PrimitiveTypeNode extends ASTNode {
   value: PrimitiveTypeValues;
 };
 
+export type TypeNameNode = 
+    PrimitiveTypeNode
+ /* | ArrayTypeNode */
+ /* | FixedArrayTypeNode */
+ /* | MapTypeNode */
+ /* | HandleTypeTypeNode */
+    | InterfaceTypeNode
+  ;
+
 /**
  * Represents a struct.
  */
 export interface StructDefinitionNode extends ASTNode {
   type: NodeType.StructDefinition;
   name: string;
-  attributes: [AttributeNode];
-  body: [(ConstDefinitionNode /* | Enum*/ | StructFieldNode)]
+  attributes: AttributeNode[];
+  body: (ConstDefinitionNode | EnumDefinitionNode | StructFieldNode)[]
 };
 
 /**
@@ -179,38 +191,38 @@ export interface StructDefinitionNode extends ASTNode {
  */
 export interface StructFieldNode extends ASTNode {
   type: NodeType.StructField;
-  attributes: [AttributeNode],
-  typing: TypeSpecNode,
-  name: string,
-  ordinalValue: number | null,
-  defaultValue: ConstantNode,
+  attributes: AttributeNode[];
+  typing: TypeSpecNode;
+  name: string;
+  ordinalValue: (number | null);
+  defaultValue: ConstantNode | null;
 };
 
 export interface UnionDefinitionNode extends ASTNode {
   type: NodeType.UnionDefinition,
   name: string,
-  attributes: [AttributeNode];
-  body: [UnionFieldNode]
+  attributes: AttributeNode[];
+  body: UnionFieldNode[]
 }
 
 export interface UnionFieldNode extends ASTNode {
   type: NodeType.UnionField,
-  attributes: [AttributeNode],
+  attributes: AttributeNode[],
   typing: TypeSpecNode,
   name: string,
-  ordinalValue: number | null,
+  ordinalValue: (number | null),
 }
 
 export interface EnumDefinitionNode extends ASTNode {
   type: NodeType.EnumDefinition,
-  attributes: [AttributeNode],
+  attributes: AttributeNode[],
   name: string,
-  body: [EnumValueNode],
+  body: EnumValueNode[],
 }
 
 export interface EnumValueNode extends ASTNode {
   type: NodeType.EnumValue,
-  attributes: [AttributeNode],
+  attributes: AttributeNode[],
   name: string,
   value: (null | number | IdentifierNode)
 }

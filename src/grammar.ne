@@ -79,7 +79,7 @@ AttributeValue ->
 Struct -> AttributeSection:? _ "struct" __ Name _ ("{" StructBody "}" {% nth(1) %}):? _ ";" {% (data): StructDefinitionNode => ({
     type: NodeType.StructDefinition,
     name: data[4],
-    attributes: data[0],
+    attributes: data[0] || [],
     body: data[6],
   })
 %}
@@ -176,7 +176,7 @@ TypeSpec -> TypeName Nullable:? {% (d): TypeSpecNode => ({
 # ENUMS
 Enum -> AttributeSection:? _ "enum" __ Name _ "{" _ EnumValueList:? _ ",":? _ "}" _ ";" {% (d): EnumDefinitionNode => ({
     type: NodeType.EnumDefinition,
-    attributes: d[0],
+    attributes: d[0] || [],
     name: d[4],
     body: d[8] || [],
   })

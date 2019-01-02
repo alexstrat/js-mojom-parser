@@ -14,7 +14,7 @@ describe('Struct definition', () => {
 Object {
   "body": Array [
     Object {
-      "attributes": null,
+      "attributes": Array [],
       "body": Array [
         Object {
           "attributes": Array [],
