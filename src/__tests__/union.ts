@@ -1,15 +1,16 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Union definition', () => {
   it('parse a single field union', () => {
-    expect(
-      getAST(`
-union ExampleUnion {
-  string str;
-};
-
-`)
-    ).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    union ExampleUnion {
+      string str;
+    };
+    
+    `)
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -40,15 +41,15 @@ Object {
   });
 
   it('parse a double field union', () => {
-    expect(
-      getAST(`
-union ExampleUnion {
-  string str;
-  StringPair pair;
-};
-
-`)
-    ).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    union ExampleUnion {
+      string str;
+      StringPair pair;
+    };
+    
+    `)
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {

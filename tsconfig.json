@@ -13,14 +13,13 @@
       "es6",
       "dom"
     ],
-    "module": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
     "removeComments": false,
     "sourceMap": true,
     "declaration": true,
     "noImplicitAny": false,
     "noUnusedParameters": false,
-    "noUnusedLocals": true,
     "skipLibCheck": true
   }
 }

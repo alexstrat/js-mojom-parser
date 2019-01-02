@@ -1,15 +1,16 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Enum definition', () => {
   it('parse enum without value', () => {
-    expect(
-      getAST(`
-enum Department {
-  SALES,
-  DEV,
-};
-    `)
-    ).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    enum Department {
+      SALES,
+      DEV,
+    };
+    `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -38,14 +39,14 @@ Object {
   });
 
   it('parse enum with values', () => {
-    expect(
-      getAST(`
-enum Department {
-  SALES = 0,
-  DEV = 1,
-};
-    `)
-    ).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    enum Department {
+      SALES = 0,
+      DEV = 1,
+    };
+    `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {

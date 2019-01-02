@@ -1,12 +1,13 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Module statement', () => {
   it('parse basic module def', () => {
-    expect(
-      getAST(`
+    const ast = getAST(`
 module fooo;
-    `)
-    ).toMatchInlineSnapshot(`
+  `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -26,11 +27,11 @@ Object {
   });
 
   it('parse dotted module def', () => {
-    expect(
-      getAST(`
+    const ast = getAST(`
 module fooo.bar.foo;
-    `)
-    ).toMatchInlineSnapshot(`
+  `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -52,11 +53,11 @@ Object {
   });
 
   it('parse attibutes module def', () => {
-    expect(
-      getAST(`
-[Sync]module fooo.bar.foo;
+    const ast = getAST(`
+    [Sync]module fooo.bar.foo;
     `)
-    ).toMatchInlineSnapshot(`
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -84,11 +85,11 @@ Object {
   });
 
   it('parse attibutes with value module def', () => {
-    expect(
-      getAST(`
-[Get="foo"]module fooo.bar.foo;
+    const ast = getAST(`
+    [Get="foo"]module fooo.bar.foo;
     `)
-    ).toMatchInlineSnapshot(`
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {

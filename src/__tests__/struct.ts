@@ -1,15 +1,16 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Struct definition', () => {
   it('parse StrintPair', () => {
-    expect(
-      getAST(`
-struct StringPair {
-  string first@1 = "ff";
-  string? second;
-};
-    `)
-    ).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    struct StringPair {
+      string first@1 = "ff";
+      string? second;
+    };
+    `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {

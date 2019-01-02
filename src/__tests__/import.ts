@@ -1,11 +1,13 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Import statements', () => {
   it('single statement', () => {
-    const mojo = `
+    const ast = getAST(`
 import "foo";
-    `;
-    expect(getAST(mojo)).toMatchInlineSnapshot(`
+    `)
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -19,12 +21,13 @@ Object {
   });
 
   it('double statement', () => {
-    const mojo = `
-import "foo";
-
-import "bar";
-    `;
-    expect(getAST(mojo)).toMatchInlineSnapshot(`
+    const ast = getAST(`
+    import "foo";
+    
+    import "bar";
+    `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {

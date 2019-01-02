@@ -1,12 +1,13 @@
+import './__utils__/toBeValidMojomAST';
 import { getAST } from '../index';
 
 describe('Const definition', () => {
   it('parse w/ primitive type', () => {
-    expect(
-      getAST(`
+    const ast = getAST(`
 const string kServiceName = "business";
-    `)
-    ).toMatchInlineSnapshot(`
+    `);
+    expect(ast).toBeValidMojomAST()
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
@@ -29,11 +30,11 @@ Object {
   });
 
   it('parse w/ identifier type', () => {
-    expect(
-      getAST(`
+    const ast = getAST(`
 const Fooo kServiceName = "bar";
-    `)
-    ).toMatchInlineSnapshot(`
+    `);
+    expect(ast).toBeValidMojomAST();
+    expect(ast).toMatchInlineSnapshot(`
 Object {
   "body": Array [
     Object {
