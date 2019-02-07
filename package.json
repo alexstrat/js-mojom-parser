@@ -1,5 +1,5 @@
 {
-  "name": "y",
+  "name": "mojom-parser",
   "version": "0.0.1",
   "description": "Parser for the Mojom IDL",
   "main": "lib/index.js",
