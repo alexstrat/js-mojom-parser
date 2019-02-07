@@ -47,8 +47,12 @@
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
-    "testMatch": ["**/__tests__/**/*.ts"],
-    "testPathIgnorePatterns": ["/__utils__/"],
+    "testMatch": [
+      "**/__tests__/**/*.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/__utils__/"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
