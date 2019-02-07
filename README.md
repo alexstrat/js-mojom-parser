@@ -2,7 +2,7 @@
 
 Parse [Mojom IDL](https://chromium.googlesource.com/chromium/src/+/master/mojo/public/tools/bindings/README.md) into AST.
 
-⚠️ The implementation is still incomplete.
+_⚠️ The implementation is still incomplete._
 
 ## Installation
 
